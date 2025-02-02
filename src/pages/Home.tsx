@@ -58,6 +58,9 @@ class Home extends Component<HomeProps, HomeState> {
 
     render() {
         const { loading, results, error } = this.state;
+        if (error) {
+            throw new Error('something went wrong');
+        }
         return (
             <div className="min-h-screen bg-gray-100 p-6">
                 <div className="max-w-2xl mx-auto mb-6">
@@ -67,10 +70,6 @@ class Home extends Component<HomeProps, HomeState> {
                     {loading ? (
                         <div className="text-center text-gray-600">
                             Loading...
-                        </div>
-                    ) : error ? (
-                        <div className="text-center text-red-500">
-                            Error: {error.message}
                         </div>
                     ) : (
                         <ResultsList results={results} />
