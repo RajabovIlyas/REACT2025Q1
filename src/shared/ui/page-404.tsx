@@ -1,6 +1,6 @@
 const Page404 = () => {
     return (
-        <div className="text-center">
+        <div data-testid="page-404" className="text-center">
             <h1 className="text-4xl font-bold dark:text-zinc-400 lg:text-5xl lg:tracking-tight">
                 404
             </h1>

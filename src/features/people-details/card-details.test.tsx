@@ -1,59 +1,79 @@
 import { vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
-import {
-    PEOPLE_BY_ID_RESULT_MOCK,
-    PEOPLE_LIST_RESULT_MOCK,
-} from '../../shared/constants/test.constants.ts';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { PEOPLE_BY_ID_RESULT_MOCK } from '../../shared/constants/test.constants.ts';
 import CardDetails from './card-details.tsx';
-import userEvent from '@testing-library/user-event';
+import { useCardDetails } from './card-details.hook.ts';
+
+vi.mock('./card-details.hook.ts', () => ({
+    useCardDetails: vi.fn(),
+}));
 
 describe('Detailed card component', () => {
     const onCloseMock = vi.fn();
 
     beforeEach(() => {
-        vi.mock('../../shared/api/people', () => {
-            return {
-                peopleListQuery: vi.fn(() =>
-                    Promise.resolve(PEOPLE_LIST_RESULT_MOCK),
-                ),
-                peopleQuery: vi.fn(() =>
-                    Promise.resolve(PEOPLE_BY_ID_RESULT_MOCK),
-                ),
-            };
-        });
+        vi.clearAllMocks();
+    });
 
+    it('should render null if personId is not provided', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            loading: false,
+            person: null,
+            error: null,
+        });
         render(
-            <MemoryRouter>
-                <CardDetails closePersonDetails={onCloseMock} personId={'2'} />
-            </MemoryRouter>,
+            <CardDetails personId={null} closePersonDetails={onCloseMock} />,
         );
+
+        expect(screen.queryByTestId('card-details')).toBeNull();
     });
 
-    it('Displays a loading indicator while data is loading', () => {
-        const loader = screen.getByTestId('loader');
-        expect(loader).toBeInTheDocument();
-    });
-
-    it('Correctly displays map details after loading', async () => {
-        const foundResult = await Promise.all([
-            screen.findByText(PEOPLE_BY_ID_RESULT_MOCK.name),
-            screen.findByText(PEOPLE_BY_ID_RESULT_MOCK.mass),
-            screen.findByText(PEOPLE_BY_ID_RESULT_MOCK.birth_year),
-            screen.findByText(PEOPLE_BY_ID_RESULT_MOCK.skin_color),
-            screen.findByText(PEOPLE_BY_ID_RESULT_MOCK.hair_color),
-        ]);
-
-        foundResult.forEach((result) => {
-            expect(result).toBeInTheDocument();
+    it('should render Loader when loading is true', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            loading: true,
+            person: null,
+            error: null,
         });
+
+        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
+        expect(screen.getByTestId('loader')).toBeInTheDocument();
     });
 
-    it('Hides the component when you click the "Close" button', async () => {
-        const closeButton = await screen.findByTestId('card-details-close-btn');
+    it('should render CardDetailsUI when person is available', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            loading: false,
+            person: PEOPLE_BY_ID_RESULT_MOCK,
+            error: null,
+        });
 
-        await userEvent.click(closeButton);
+        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
+        expect(screen.getByTestId('card-details')).toBeInTheDocument();
+        expect(screen.getByText('C-3PO')).toBeInTheDocument();
+    });
 
+    it('should call closePersonDetails when close button is clicked', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            loading: false,
+            person: PEOPLE_BY_ID_RESULT_MOCK,
+            error: null,
+        });
+
+        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
+        fireEvent.click(screen.getByTestId('card-details-close-btn'));
         expect(onCloseMock).toHaveBeenCalled();
+    });
+
+    it('should throw error if error is present', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            loading: false,
+            person: null,
+            error: new Error('Some error'),
+        });
+
+        expect(() => {
+            render(
+                <CardDetails personId="1" closePersonDetails={onCloseMock} />,
+            );
+        }).toThrow('Some error');
     });
 });

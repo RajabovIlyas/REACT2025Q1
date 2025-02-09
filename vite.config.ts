@@ -11,7 +11,9 @@ export default defineConfig({
         watch: false,
         setupFiles: ['./vitest.setup.ts'],
         coverage: {
-            include: ['../*.tsx'],
+            include: ['**/*.tsx'],
+            provider: 'v8',
+            reporter: ['text', 'json', 'html'],
         },
     },
 });
