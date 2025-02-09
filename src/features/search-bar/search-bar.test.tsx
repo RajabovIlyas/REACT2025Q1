@@ -13,7 +13,7 @@ describe('search-bar component', () => {
     beforeEach(() => {
         localStorage.clear();
         vi.clearAllMocks();
-        useSearchBar.mockReturnValue({
+        vi.mocked(useSearchBar).mockReturnValue({
             query: '',
             handleSearch: mockOnSearch,
             handleInputChange: vi.fn(),
@@ -30,7 +30,7 @@ describe('search-bar component', () => {
 
     it('updates the input value when typing', () => {
         const handleInputChangeMock = vi.fn();
-        useSearchBar.mockReturnValue({
+        vi.mocked(useSearchBar).mockReturnValue({
             query: 'test',
             handleSearch: mockOnSearch,
             handleInputChange: handleInputChangeMock,
@@ -54,7 +54,7 @@ describe('search-bar component', () => {
     });
 
     it('displays the current query in the input', () => {
-        useSearchBar.mockReturnValue({
+        vi.mocked(useSearchBar).mockReturnValue({
             query: 'test query',
             handleSearch: mockOnSearch,
             handleInputChange: vi.fn(),
