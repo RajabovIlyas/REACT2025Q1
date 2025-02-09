@@ -1,15 +1,24 @@
-import { useSearchParams as useUrlSearchParams } from 'react-router';
+import {
+    URLSearchParamsInit,
+    useSearchParams as useUrlSearchParams,
+} from 'react-router';
+import { useCallback } from 'react';
 
 export const useSearchParams = () => {
     const [searchParams, setSearchParams] = useUrlSearchParams();
 
-    const setParams = <T>(params: T) => {
-        setSearchParams((searchParams) => {
-            return {
+    const setParams = useCallback(
+        <T>(params: T) => {
+            setSearchParams({
                 ...Object.fromEntries(searchParams),
                 ...params,
-            };
-        });
+            });
+        },
+        [searchParams],
+    );
+
+    const replaceSearchParams = (params: URLSearchParamsInit) => {
+        setSearchParams(params);
     };
 
     const deleteParams = (params: string) => {
@@ -17,7 +26,10 @@ export const useSearchParams = () => {
         setSearchParams(Object.fromEntries(searchParams));
     };
 
-    const getParams = (params: string) => searchParams.get(params);
+    const getParams = useCallback(
+        (params: string) => searchParams.get(params),
+        [searchParams],
+    );
 
-    return { setParams, getParams, deleteParams };
+    return { setParams, getParams, deleteParams, replaceSearchParams };
 };

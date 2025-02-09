@@ -15,7 +15,7 @@ export const usePeopleDetailsModal = () => {
             setParams({ details: id });
             setPersonId(id);
         },
-        [personId],
+        [personId, setParams],
     );
 
     const checkDetails = () => {

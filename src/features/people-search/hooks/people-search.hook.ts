@@ -4,7 +4,7 @@ import { useFetchSearchResult } from './fetch-search-result.hook.ts';
 import { usePeopleDetailsModal } from './people-details-modal.hook.ts';
 
 export const usePeopleSearch = () => {
-    const { setParams, getParams } = useSearchParams();
+    const { replaceSearchParams, getParams } = useSearchParams();
     const [error, setError] = useState<Error | null>(null);
     const { fetchSearchResults, results, loading, pagination } =
         useFetchSearchResult({ setError });
@@ -18,8 +18,8 @@ export const usePeopleSearch = () => {
     };
 
     const loadPage = (page: string) => {
-        setParams({ page });
         closePeopleDetails();
+        replaceSearchParams({ page });
         const lastQuery = localStorage.getItem('lastSearchQuery') ?? '';
         fetchSearchResults(lastQuery, page);
     };

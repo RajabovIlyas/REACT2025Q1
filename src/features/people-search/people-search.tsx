@@ -27,7 +27,7 @@ const PeopleSearch = () => {
             <div className="max-w-2xl mx-auto mb-6">
                 <SearchBar onSearch={fetchResults} />
             </div>
-            <div className="min-h-[calc(100vh-12rem)] flex items-stretch gap-3 bg-white shadow-md rounded-lg p-6">
+            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white shadow-md rounded-lg p-6">
                 {loading ? (
                     <div className="flex-1">
                         <Loader />

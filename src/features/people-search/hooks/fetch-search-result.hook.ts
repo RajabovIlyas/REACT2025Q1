@@ -22,7 +22,6 @@ export const useFetchSearchResult = ({ setError }: RequestResultHookProps) => {
     ) => {
         setLoading(true);
         setError(null);
-
         try {
             const response = await peopleListQuery(searchQuery, page);
             setPagination(transformPeoplesResToPagination(response));
