@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useSearchBar } from './search-bar.hook.ts';
+import Button from '../../shared/ui/button.tsx';
 
 type SearchBarProps = {
     onSearch: (query: string) => Promise<void>;
@@ -17,11 +18,7 @@ const SearchBar: FC<SearchBarProps> = (props) => {
                 placeholder="Enter search term..."
                 className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button
-                onClick={handleSearch}
-                className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
-                Search
-            </button>
+            <Button onClick={handleSearch}>Search</Button>
         </div>
     );
 };

@@ -1,6 +1,8 @@
 import CardItem from './card-item.tsx';
 import { vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { store } from '../../shared/lib/store/store.ts';
 
 const CARD_DATA = {
     id: '1',
@@ -10,7 +12,15 @@ const CARD_DATA = {
 
 describe('Card Item component', () => {
     beforeEach(() => {
-        render(<CardItem {...CARD_DATA} clickPeople={vi.fn()} />);
+        render(
+            <Provider store={store}>
+                <CardItem
+                    {...CARD_DATA}
+                    clickPeople={vi.fn()}
+                    selectedItems={{}}
+                />
+            </Provider>,
+        );
     });
 
     it('renders the relevant card data', () => {

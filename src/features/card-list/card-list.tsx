@@ -8,8 +8,15 @@ type CardListProps = {
 };
 
 const CardList: FC<CardListProps> = ({ results }) => {
-    const { clickPeople } = useCardList();
-    return <CardListWidgets clickPeople={clickPeople} results={results} />;
+    const { clickPeople, closeDetails, selectedItems } = useCardList();
+    return (
+        <CardListWidgets
+            clickPeople={clickPeople}
+            results={results}
+            closeDetails={closeDetails}
+            selectedItems={selectedItems}
+        />
+    );
 };
 
 export default CardList;
