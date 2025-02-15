@@ -1,9 +1,9 @@
 import SearchBar from '../search-bar/search-bar.tsx';
-import CardList from '../../widgets/card-list/card-list.tsx';
+import CardList from '../card-list/card-list.tsx';
 import { usePeopleSearch } from './hooks';
-import CardDetails from '../people-details/card-details.tsx';
 import Loader from '../../shared/ui/loader.tsx';
 import Pagination from '../pagination/pagination.tsx';
+import { Outlet } from 'react-router';
 
 const PeopleSearch = () => {
     const {
@@ -14,9 +14,6 @@ const PeopleSearch = () => {
         results,
         fetchResults,
         loading,
-        closePeopleDetails,
-        personId,
-        clickPeople,
     } = usePeopleSearch();
     if (error) {
         throw error;
@@ -33,12 +30,9 @@ const PeopleSearch = () => {
                         <Loader />
                     </div>
                 ) : (
-                    <CardList results={results} clickPeople={clickPeople} />
+                    <CardList results={results} />
                 )}
-                <CardDetails
-                    closePersonDetails={closePeopleDetails}
-                    personId={personId}
-                />
+                <Outlet />
             </div>
             <Pagination {...pagination} loading={loading} loadPage={loadPage} />
             <div className="flex justify-end">

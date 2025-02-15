@@ -3,23 +3,11 @@ import { useCardDetails } from './card-details.hook.ts';
 import CardDetailsUI from '../../widgets/card-details.tsx';
 import Loader from '../../shared/ui/loader.tsx';
 
-type CardDetailsProps = {
-    personId?: string | null;
-    closePersonDetails: () => void;
-};
-
-const CardDetails: FC<CardDetailsProps> = ({
-    personId,
-    closePersonDetails,
-}) => {
-    const { error, person, loading } = useCardDetails({ personId });
+const CardDetails: FC = () => {
+    const { error, person, loading, closePersonDetails } = useCardDetails();
 
     if (error) {
         throw error;
-    }
-
-    if (!personId) {
-        return null;
     }
 
     return (

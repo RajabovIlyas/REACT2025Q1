@@ -1,25 +1,23 @@
 import { useState } from 'react';
-import { useSearchParams } from '../../../shared/hooks/search-params.hook.ts';
 import { useFetchSearchResult } from './fetch-search-result.hook.ts';
-import { usePeopleDetailsModal } from './people-details-modal.hook.ts';
+import { useNavigate } from '../../../shared/hooks/navigate.hook.ts';
+import { useSearchParams } from '../../../shared/hooks/search-params.hook.ts';
 
 export const usePeopleSearch = () => {
-    const { replaceSearchParams, getParams } = useSearchParams();
+    const { setNavigate } = useNavigate();
+    const { getParams } = useSearchParams();
     const [error, setError] = useState<Error | null>(null);
     const { fetchSearchResults, results, loading, pagination } =
         useFetchSearchResult({ setError });
-    const { personId, closePeopleDetails, clickPeople } =
-        usePeopleDetailsModal();
 
     const fetchResults = async (searchQuery: string) => {
-        closePeopleDetails();
-        const page = getParams('page');
+        const page = getParams('page') ?? '1';
+        setNavigate(`/`, { page: page });
         await fetchSearchResults(searchQuery, page);
     };
 
     const loadPage = (page: string) => {
-        closePeopleDetails();
-        replaceSearchParams({ page });
+        setNavigate(`/`, { page });
         const lastQuery = localStorage.getItem('lastSearchQuery') ?? '';
         fetchSearchResults(lastQuery, page);
     };
@@ -42,8 +40,5 @@ export const usePeopleSearch = () => {
         error,
         triggerError,
         fetchResults,
-        clickPeople,
-        personId,
-        closePeopleDetails,
     };
 };

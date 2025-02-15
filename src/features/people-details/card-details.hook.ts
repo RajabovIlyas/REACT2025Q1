@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { People } from '../../entities/people';
 import { peopleQuery } from '../../shared/api/people';
+import { useParams } from 'react-router';
+import { useNavigate } from '../../shared/hooks/navigate.hook.ts';
 
-type CardDetailsHookProps = {
-    personId?: string | null;
-};
-
-export const useCardDetails = ({ personId }: CardDetailsHookProps) => {
+export const useCardDetails = () => {
+    const { setNavigate } = useNavigate();
+    const { personId } = useParams();
     const [person, setPerson] = useState<People | null>(null);
     const [error, setError] = useState<Error | null>(null);
-    const [loading, setLoading] = useState(false);
 
+    const [loading, setLoading] = useState(false);
     const fetchPerson = async () => {
         if (!personId) {
             setPerson(null);
@@ -33,5 +33,9 @@ export const useCardDetails = ({ personId }: CardDetailsHookProps) => {
         fetchPerson();
     }, [personId]);
 
-    return { person, loading, error };
+    const closePersonDetails = () => {
+        setNavigate('/');
+    };
+
+    return { person, loading, error, closePersonDetails };
 };
