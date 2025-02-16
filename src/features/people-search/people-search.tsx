@@ -1,0 +1,55 @@
+import SearchBar from '../search-bar/search-bar.tsx';
+import CardList from '../../widgets/card-list/card-list.tsx';
+import { usePeopleSearch } from './hooks';
+import CardDetails from '../people-details/card-details.tsx';
+import Loader from '../../shared/ui/loader.tsx';
+import Pagination from '../pagination/pagination.tsx';
+
+const PeopleSearch = () => {
+    const {
+        loadPage,
+        pagination,
+        error,
+        triggerError,
+        results,
+        fetchResults,
+        loading,
+        closePeopleDetails,
+        personId,
+        clickPeople,
+    } = usePeopleSearch();
+    if (error) {
+        throw error;
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-100 p-6">
+            <div className="max-w-2xl mx-auto mb-6">
+                <SearchBar onSearch={fetchResults} />
+            </div>
+            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white shadow-md rounded-lg p-6">
+                {loading ? (
+                    <div className="flex-1">
+                        <Loader />
+                    </div>
+                ) : (
+                    <CardList results={results} clickPeople={clickPeople} />
+                )}
+                <CardDetails
+                    closePersonDetails={closePeopleDetails}
+                    personId={personId}
+                />
+            </div>
+            <Pagination {...pagination} loading={loading} loadPage={loadPage} />
+            <div className="flex justify-end">
+                <button
+                    className="r-0 mt-6 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors"
+                    onClick={triggerError}>
+                    Trigger Error
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default PeopleSearch;

@@ -1,18 +1,30 @@
 import { FC } from 'react';
-import { SearchResult } from '../app/types';
+import { PeopleSearchResult } from '../../entities/people';
+import CardItem from './card-item.tsx';
 
-interface ResultsListProps {
-    results: SearchResult[];
-}
+type CardListProps = {
+    results: PeopleSearchResult[];
+    clickPeople: (id: string) => void;
+};
 
-const ResultsList: FC<ResultsListProps> = ({ results }) => {
+const CardList: FC<CardListProps> = ({ results, clickPeople }) => {
     if (results.length === 0) {
-        return <p className="text-gray-600">No results found</p>;
+        return (
+            <div className="flex-1">
+                <div className="flex-1 flex justify-center items-center h-full">
+                    <p
+                        data-testid="no-cards-message"
+                        className="text-gray-600 text-center">
+                        No results found
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+        <div className="grow overflow-x-auto border border-gray-500 rounded-2xl">
+            <div className="min-w-full p-4">
                 <div className="overflow-hidden">
                     <table className="min-w-full text-left text-sm font-light">
                         <thead className="border-b font-medium dark:border-neutral-500">
@@ -27,16 +39,11 @@ const ResultsList: FC<ResultsListProps> = ({ results }) => {
                         </thead>
                         <tbody>
                             {results.map((item) => (
-                                <tr
+                                <CardItem
                                     key={item.id}
-                                    className="border-b dark:border-gray-500">
-                                    <td className="whitespace-nowrap px-6 py-4">
-                                        {item.title}
-                                    </td>
-                                    <td className="whitespace-nowrap px-6 py-4">
-                                        {item.description}
-                                    </td>
-                                </tr>
+                                    {...item}
+                                    clickPeople={clickPeople}
+                                />
                             ))}
                         </tbody>
                     </table>
@@ -46,4 +53,4 @@ const ResultsList: FC<ResultsListProps> = ({ results }) => {
     );
 };
 
-export default ResultsList;
+export default CardList;

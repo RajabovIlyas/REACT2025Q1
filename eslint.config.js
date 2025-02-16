@@ -24,6 +24,8 @@ export default tseslint.config(
                 'warn',
                 { allowConstantExport: true },
             ],
+            '@typescript-eslint/no-empty-object-type': 'off',
+            'react-hooks/exhaustive-deps': 'off',
         },
     },
     eslintPluginPrettier,
