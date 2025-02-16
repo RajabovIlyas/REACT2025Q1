@@ -5,6 +5,7 @@ import Loader from '../../shared/ui/loader.tsx';
 import Pagination from '../pagination/pagination.tsx';
 import { Outlet } from 'react-router';
 import SelectedDropdown from '../selected-dropdown';
+import ThemeSwitch from '../../widgets/theme-switch/theme-switch.tsx';
 
 const PeopleSearch = () => {
     const {
@@ -21,11 +22,14 @@ const PeopleSearch = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gray-100 dark:text-white dark:bg-gray-900 p-6">
+            <div className="flex justify-end">
+                <ThemeSwitch />
+            </div>
             <div className="max-w-2xl mx-auto mb-6">
                 <SearchBar onSearch={fetchResults} />
             </div>
-            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white shadow-md rounded-lg p-6">
+            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
                 {loading ? (
                     <div className="flex-1">
                         <Loader />

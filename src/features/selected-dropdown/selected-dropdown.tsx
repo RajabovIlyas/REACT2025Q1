@@ -11,7 +11,7 @@ const SelectedDropdown: FC = () => {
     }
 
     return (
-        <div className="bottom-7 left-7 fixed border bg-white border-gray-300 rounded-xl shadow-md p-4">
+        <div className="bottom-7 left-7 fixed border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-xl shadow-md p-4">
             <p className="pb-4">
                 {filteredSelectedItems.length} items are selected
             </p>

@@ -31,7 +31,7 @@ const CardItem: FC<CardItemProps> = ({
     return (
         <tr
             data-testid={`result-card-${id}`}
-            className="border-b dark:border-gray-500 hover:bg-gray-100  hover:cursor-pointer">
+            className="border-b dark:border-gray-500 hover:bg-gray-100 hover:dark:bg-gray-700  hover:cursor-pointer">
             <td data-testid="card-checkbox" className="px-4 py-4">
                 <input
                     type="checkbox"

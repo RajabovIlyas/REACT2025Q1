@@ -1,1 +1,30 @@
 @import 'tailwindcss';
+
+@theme {
+    --shadow-switch: inset 3px -3px 0px 0px #eff6ff;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+    .toggle-switch {
+        @apply relative h-6 w-12;
+    }
+
+    .switch-label {
+        @apply absolute h-6 w-full cursor-pointer rounded-xl border-2 border-solid border-zinc-400 bg-zinc-800 hover:border-zinc-600;
+    }
+
+    .checkbox {
+        @apply absolute hidden;
+    }
+
+    .slider {
+        @apply absolute h-full w-full rounded-xl bg-gray-950 transition-all before:absolute before:left-1
+        before:top-1 before:h-3 before:w-3 before:rounded-full before:bg-gray-950 before:shadow-switch before:transition-all;
+    }
+
+    .checkbox:checked ~ .slider {
+        @apply bg-zinc-200 before:translate-x-6 before:bg-black before:shadow-none;
+    }
+}

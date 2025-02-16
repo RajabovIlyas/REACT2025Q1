@@ -8,8 +8,7 @@ import {
     PEOPLE_BY_ID_RESULT_MOCK,
     PEOPLE_LIST_RESULT_MOCK,
 } from '../../shared/constants/test.constants.ts';
-import { store } from '../../shared/lib/store/store.ts';
-import { Provider } from 'react-redux';
+import { Providers } from '../../app/providers';
 
 describe('people-search component', () => {
     beforeEach(() => {
@@ -25,11 +24,11 @@ describe('people-search component', () => {
         });
 
         render(
-            <Provider store={store}>
+            <Providers>
                 <MemoryRouter>
                     <PeopleSearch />
                 </MemoryRouter>
-            </Provider>,
+            </Providers>,
         );
     });
 
