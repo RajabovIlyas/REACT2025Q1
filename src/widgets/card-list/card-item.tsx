@@ -25,7 +25,7 @@ const CardItem: FC<CardItemProps> = ({
     };
 
     const onClickCheckbox = () => {
-        dispatch(selectedItem(id));
+        dispatch(selectedItem({ id, title, description }));
     };
 
     return (
@@ -36,8 +36,8 @@ const CardItem: FC<CardItemProps> = ({
                 <input
                     type="checkbox"
                     className="z-10"
-                    defaultChecked={!!selectedItems[id]}
-                    onClick={onClickCheckbox}
+                    checked={!!selectedItems[id]}
+                    onChange={onClickCheckbox}
                 />
             </td>
             <td

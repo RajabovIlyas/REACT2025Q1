@@ -1,1 +1,3 @@
-export * from './card-list.tsx';
+import CardList from './card-list.tsx';
+
+export default CardList;

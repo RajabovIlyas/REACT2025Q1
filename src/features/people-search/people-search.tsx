@@ -4,6 +4,7 @@ import { usePeopleSearch } from './hooks';
 import Loader from '../../shared/ui/loader.tsx';
 import Pagination from '../pagination/pagination.tsx';
 import { Outlet } from 'react-router';
+import SelectedDropdown from '../selected-dropdown';
 
 const PeopleSearch = () => {
     const {
@@ -42,6 +43,8 @@ const PeopleSearch = () => {
                     Trigger Error
                 </button>
             </div>
+
+            <SelectedDropdown />
         </div>
     );
 };

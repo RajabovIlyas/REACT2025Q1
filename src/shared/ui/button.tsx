@@ -2,7 +2,7 @@ import { FC, MouseEvent, ReactNode } from 'react';
 
 type ButtonProps = {
     children: ReactNode;
-    onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+    onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 const Button: FC<ButtonProps> = ({ children, onClick }) => {
     return (

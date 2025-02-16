@@ -1,3 +1,5 @@
+import { PeopleSearchResult } from '../people';
+
 export type SelectedItems = {
-    [key: string]: boolean | null | undefined;
+    [key: string]: PeopleSearchResult | null | undefined;
 };
