@@ -1,5 +1,4 @@
-import { PeopleSearchResult } from './people.type.ts';
-import { PeopleListResponse } from '../../shared/api/people';
+import { PeopleListResponse, PeopleSearchResult } from './people.type.ts';
 
 export const transformUrlToId = (url: string) => {
     const parts = url.split('/');

@@ -1,5 +1,5 @@
-import { PeopleListResponse } from '../../shared/api/people';
 import { Pagination } from './pagination.type.ts';
+import { PeopleListResponse } from '../people';
 
 export const transformPeoplesResToPagination = (
     { next, previous }: PeopleListResponse,
