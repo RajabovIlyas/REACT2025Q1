@@ -4,22 +4,28 @@ import { useNavigate } from '../../../shared/hooks/navigate.hook.ts';
 import { useSearchParams } from '../../../shared/hooks/search-params.hook.ts';
 
 export const usePeopleSearch = () => {
-    const { setNavigate } = useNavigate();
     const { getParams } = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState(
+        localStorage.getItem('lastSearchQuery') ?? '',
+    );
+    const [page, setPage] = useState(getParams('page') ?? '1');
+    const { setNavigate } = useNavigate();
     const [error, setError] = useState<Error | null>(null);
-    const { fetchSearchResults, results, loading, pagination } =
-        useFetchSearchResult({ setError });
+    const { results, loading, pagination } = useFetchSearchResult({
+        searchQuery,
+        page,
+        setError,
+    });
 
     const fetchResults = async (searchQuery: string) => {
         const page = getParams('page') ?? '1';
         setNavigate(`/`, { page: page });
-        await fetchSearchResults(searchQuery, page);
+        setSearchQuery(searchQuery);
     };
 
     const loadPage = (page: string) => {
         setNavigate(`/`, { page });
-        const lastQuery = localStorage.getItem('lastSearchQuery') ?? '';
-        fetchSearchResults(lastQuery, page);
+        setPage(page);
     };
 
     const triggerError = () => {

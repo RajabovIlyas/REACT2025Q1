@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { PeopleSearchResult } from '../../../entities/people';
-import { API_URL } from '../../api';
+import { API_URL } from '../../../entities';
 
 export const downloadCSV = (selectedItems: PeopleSearchResult[]) => {
     const csvContent = [

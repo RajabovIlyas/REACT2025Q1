@@ -22,3 +22,10 @@ export type PeopleSearchResult = {
     title: string;
     description: string;
 };
+
+export type PeopleListResponse = {
+    count: number;
+    next: null | string;
+    previous: null | string;
+    results: People[];
+};
