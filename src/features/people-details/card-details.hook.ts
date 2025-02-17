@@ -1,37 +1,20 @@
-import { useEffect, useState } from 'react';
-import { People } from '../../entities/people';
-import { peopleQuery } from '../../shared/api/people';
+import { useParams } from 'react-router';
+import { useNavigate } from '../../shared/hooks/navigate.hook.ts';
+import { useGetPeopleByIdQuery } from '../../shared/lib/query-api/people-api.ts';
 
-type CardDetailsHookProps = {
-    personId?: string | null;
-};
+export const useCardDetails = () => {
+    const { setNavigate } = useNavigate();
+    const { personId } = useParams();
 
-export const useCardDetails = ({ personId }: CardDetailsHookProps) => {
-    const [person, setPerson] = useState<People | null>(null);
-    const [error, setError] = useState<Error | null>(null);
-    const [loading, setLoading] = useState(false);
+    const {
+        data: person,
+        error,
+        isFetching: loading,
+    } = useGetPeopleByIdQuery({ id: personId });
 
-    const fetchPerson = async () => {
-        if (!personId) {
-            setPerson(null);
-            return;
-        }
-        setLoading(true);
-        try {
-            const response = await peopleQuery(personId);
-            setPerson(response);
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(error);
-            }
-        } finally {
-            setLoading(false);
-        }
+    const closePersonDetails = () => {
+        setNavigate('/');
     };
 
-    useEffect(() => {
-        fetchPerson();
-    }, [personId]);
-
-    return { person, loading, error };
+    return { person, loading, error, closePersonDetails };
 };

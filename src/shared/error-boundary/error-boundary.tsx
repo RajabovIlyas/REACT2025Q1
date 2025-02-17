@@ -1,6 +1,4 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { AxiosError } from 'axios';
-import Page404 from '../../pages/page-404/page-404.tsx';
 
 interface ErrorBoundaryProps {
     children: ReactNode;
@@ -26,9 +24,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     }
 
     render() {
-        if (this.state.error instanceof AxiosError) {
-            return <Page404 />;
-        }
         if (this.state.hasError) {
             return (
                 <div className="text-center text-red-500 p-6 bg-red-50 rounded-md">

@@ -1,9 +1,11 @@
 import SearchBar from '../search-bar/search-bar.tsx';
-import CardList from '../../widgets/card-list/card-list.tsx';
+import CardList from '../card-list/card-list.tsx';
 import { usePeopleSearch } from './hooks';
-import CardDetails from '../people-details/card-details.tsx';
 import Loader from '../../shared/ui/loader.tsx';
 import Pagination from '../pagination/pagination.tsx';
+import { Outlet } from 'react-router';
+import SelectedDropdown from '../selected-dropdown';
+import ThemeSwitch from '../../widgets/theme-switch/theme-switch.tsx';
 
 const PeopleSearch = () => {
     const {
@@ -14,31 +16,28 @@ const PeopleSearch = () => {
         results,
         fetchResults,
         loading,
-        closePeopleDetails,
-        personId,
-        clickPeople,
     } = usePeopleSearch();
     if (error) {
         throw error;
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gray-100 dark:text-white dark:bg-gray-900 p-6">
+            <div className="flex justify-end">
+                <ThemeSwitch />
+            </div>
             <div className="max-w-2xl mx-auto mb-6">
                 <SearchBar onSearch={fetchResults} />
             </div>
-            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white shadow-md rounded-lg p-6">
+            <div className="min-h-[calc(100vh-16rem)] flex items-stretch gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
                 {loading ? (
                     <div className="flex-1">
                         <Loader />
                     </div>
                 ) : (
-                    <CardList results={results} clickPeople={clickPeople} />
+                    <CardList results={results} />
                 )}
-                <CardDetails
-                    closePersonDetails={closePeopleDetails}
-                    personId={personId}
-                />
+                <Outlet />
             </div>
             <Pagination {...pagination} loading={loading} loadPage={loadPage} />
             <div className="flex justify-end">
@@ -48,6 +47,8 @@ const PeopleSearch = () => {
                     Trigger Error
                 </button>
             </div>
+
+            <SelectedDropdown />
         </div>
     );
 };

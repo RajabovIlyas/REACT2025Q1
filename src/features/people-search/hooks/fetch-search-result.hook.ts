@@ -1,40 +1,38 @@
-import { peopleListQuery } from '../../../shared/api/people';
 import { transformPeoplesResToPagination } from '../../../entities/pagination';
-import {
-    PeopleSearchResult,
-    transformPeoplesResToPeoplesResult,
-} from '../../../entities/people';
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { usePagination } from '../../pagination';
+import { useGetPeopleQuery } from '../../../shared/lib/query-api/people-api.ts';
+import { transformPeoplesResToPeoplesResult } from '../../../entities/people';
 
 type RequestResultHookProps = {
     setError: (err: Error | null) => void;
+    searchQuery: string;
+    page?: string | null;
 };
 
-export const useFetchSearchResult = ({ setError }: RequestResultHookProps) => {
-    const [results, setResults] = useState<PeopleSearchResult[]>([]);
-    const [loading, setLoading] = useState(false);
+export const useFetchSearchResult = ({
+    searchQuery,
+    page,
+    setError,
+}: RequestResultHookProps) => {
     const { pagination, setPagination } = usePagination();
+    const {
+        data,
+        error,
+        isFetching: loading,
+    } = useGetPeopleQuery({ search: searchQuery, page });
 
-    const fetchSearchResults = async (
-        searchQuery: string,
-        page?: string | null,
-    ) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await peopleListQuery(searchQuery, page);
-            setPagination(transformPeoplesResToPagination(response));
-            setResults(transformPeoplesResToPeoplesResult(response));
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err);
-            }
-            console.error(err);
-        } finally {
-            setLoading(false);
+    if (error instanceof Error) {
+        setError(error);
+    }
+
+    const results = useMemo(() => {
+        if (!data) {
+            return [];
         }
-    };
+        setPagination(transformPeoplesResToPagination(data));
+        return transformPeoplesResToPeoplesResult(data);
+    }, [data]);
 
-    return { fetchSearchResults, pagination, results, loading };
+    return { pagination, results, loading };
 };

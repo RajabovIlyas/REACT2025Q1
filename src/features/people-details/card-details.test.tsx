@@ -1,79 +1,80 @@
-import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { PEOPLE_BY_ID_RESULT_MOCK } from '../../shared/constants/test.constants.ts';
 import CardDetails from './card-details.tsx';
 import { useCardDetails } from './card-details.hook.ts';
+import { vi } from 'vitest';
+import { PEOPLE_BY_ID_RESULT_MOCK } from '../../shared/constants/test.constants.ts';
 
-vi.mock('./card-details.hook.ts', () => ({
-    useCardDetails: vi.fn(),
-}));
+vi.mock('./card-details.hook.ts');
 
-describe('Detailed card component', () => {
-    const onCloseMock = vi.fn();
+describe('CardDetails', () => {
+    const mockClosePersonDetails = vi.fn();
 
     beforeEach(() => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            error: undefined,
+            person: undefined,
+            loading: false,
+            closePersonDetails: mockClosePersonDetails,
+        });
+    });
+
+    afterEach(() => {
         vi.clearAllMocks();
     });
 
-    it('should render null if personId is not provided', () => {
+    it('renders loading state', () => {
         vi.mocked(useCardDetails).mockReturnValue({
-            loading: false,
-            person: null,
-            error: null,
-        });
-        render(
-            <CardDetails personId={null} closePersonDetails={onCloseMock} />,
-        );
-
-        expect(screen.queryByTestId('card-details')).toBeNull();
-    });
-
-    it('should render Loader when loading is true', () => {
-        vi.mocked(useCardDetails).mockReturnValue({
+            error: undefined,
+            person: undefined,
             loading: true,
-            person: null,
-            error: null,
+            closePersonDetails: mockClosePersonDetails,
         });
 
-        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
+        render(<CardDetails />);
+
         expect(screen.getByTestId('loader')).toBeInTheDocument();
     });
 
-    it('should render CardDetailsUI when person is available', () => {
+    it('renders error state', () => {
+        const error = new Error('Something went wrong');
         vi.mocked(useCardDetails).mockReturnValue({
+            error,
+            person: undefined,
             loading: false,
-            person: PEOPLE_BY_ID_RESULT_MOCK,
-            error: null,
+            closePersonDetails: mockClosePersonDetails,
         });
 
-        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
+        expect(() => render(<CardDetails />)).toThrow(error);
+    });
+
+    it('renders person details', () => {
+        vi.mocked(useCardDetails).mockReturnValue({
+            error: undefined,
+            person: PEOPLE_BY_ID_RESULT_MOCK,
+            loading: false,
+            closePersonDetails: mockClosePersonDetails,
+        });
+
+        render(<CardDetails />);
+
         expect(screen.getByTestId('card-details')).toBeInTheDocument();
         expect(screen.getByText('C-3PO')).toBeInTheDocument();
+        expect(screen.getByText('112BBY')).toBeInTheDocument();
     });
 
-    it('should call closePersonDetails when close button is clicked', () => {
+    it('calls closePersonDetails when close button is clicked', () => {
         vi.mocked(useCardDetails).mockReturnValue({
-            loading: false,
+            error: undefined,
             person: PEOPLE_BY_ID_RESULT_MOCK,
-            error: null,
-        });
-
-        render(<CardDetails personId="1" closePersonDetails={onCloseMock} />);
-        fireEvent.click(screen.getByTestId('card-details-close-btn'));
-        expect(onCloseMock).toHaveBeenCalled();
-    });
-
-    it('should throw error if error is present', () => {
-        vi.mocked(useCardDetails).mockReturnValue({
             loading: false,
-            person: null,
-            error: new Error('Some error'),
+            closePersonDetails: mockClosePersonDetails,
         });
 
-        expect(() => {
-            render(
-                <CardDetails personId="1" closePersonDetails={onCloseMock} />,
-            );
-        }).toThrow('Some error');
+        render(<CardDetails />);
+
+        const closeButton = screen.getByTestId('card-details-close-btn');
+        fireEvent.click(closeButton);
+
+        expect(mockClosePersonDetails).toHaveBeenCalled();
     });
 });

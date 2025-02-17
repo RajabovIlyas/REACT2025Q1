@@ -1,27 +1,31 @@
 import { useState } from 'react';
-import { useSearchParams } from '../../../shared/hooks/search-params.hook.ts';
 import { useFetchSearchResult } from './fetch-search-result.hook.ts';
-import { usePeopleDetailsModal } from './people-details-modal.hook.ts';
+import { useNavigate } from '../../../shared/hooks/navigate.hook.ts';
+import { useSearchParams } from '../../../shared/hooks/search-params.hook.ts';
 
 export const usePeopleSearch = () => {
-    const { replaceSearchParams, getParams } = useSearchParams();
+    const { getParams } = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState(
+        localStorage.getItem('lastSearchQuery') ?? '',
+    );
+    const [page, setPage] = useState(getParams('page') ?? '1');
+    const { setNavigate } = useNavigate();
     const [error, setError] = useState<Error | null>(null);
-    const { fetchSearchResults, results, loading, pagination } =
-        useFetchSearchResult({ setError });
-    const { personId, closePeopleDetails, clickPeople } =
-        usePeopleDetailsModal();
+    const { results, loading, pagination } = useFetchSearchResult({
+        searchQuery,
+        page,
+        setError,
+    });
 
     const fetchResults = async (searchQuery: string) => {
-        closePeopleDetails();
-        const page = getParams('page');
-        await fetchSearchResults(searchQuery, page);
+        const page = getParams('page') ?? '1';
+        setNavigate(`/`, { page: page });
+        setSearchQuery(searchQuery);
     };
 
     const loadPage = (page: string) => {
-        closePeopleDetails();
-        replaceSearchParams({ page });
-        const lastQuery = localStorage.getItem('lastSearchQuery') ?? '';
-        fetchSearchResults(lastQuery, page);
+        setNavigate(`/`, { page });
+        setPage(page);
     };
 
     const triggerError = () => {
@@ -42,8 +46,5 @@ export const usePeopleSearch = () => {
         error,
         triggerError,
         fetchResults,
-        clickPeople,
-        personId,
-        closePeopleDetails,
     };
 };
