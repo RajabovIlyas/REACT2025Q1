@@ -2,31 +2,82 @@ import CardItem from './card-item.tsx';
 import { vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { store } from '../../shared/lib/store/store.ts';
+import { createStore } from '@reduxjs/toolkit';
+import { selectedItemsReducers } from '../../shared/lib/store/slices/selected-items.slice.ts';
+import { userEvent } from '@testing-library/user-event';
 
-const CARD_DATA = {
-    id: '1',
-    title: 'Test Card',
-    description: 'This is search result',
-};
+const store = createStore(selectedItemsReducers);
 
-describe('Card Item component', () => {
-    beforeEach(() => {
+describe('CardItem Component', () => {
+    const mockClickPeople = vi.fn();
+    const mockSelectedItems = {};
+
+    test('renders CardItem with title and description', () => {
+        const props = {
+            id: '1',
+            title: 'Test Title',
+            description: 'Test Description',
+            clickPeople: mockClickPeople,
+            selectedItems: mockSelectedItems,
+        };
+
         render(
             <Provider store={store}>
-                <CardItem
-                    {...CARD_DATA}
-                    clickPeople={vi.fn()}
-                    selectedItems={{}}
-                />
+                <CardItem {...props} />
             </Provider>,
+        );
+
+        expect(screen.getByTestId('card-title')).toHaveTextContent(
+            'Test Title',
+        );
+        expect(screen.getByTestId('card-description')).toHaveTextContent(
+            'Test Description',
         );
     });
 
-    it('renders the relevant card data', () => {
-        const cardTitle = screen.getByTestId('card-title');
-        const cardDescription = screen.getByTestId('card-description');
-        expect(cardTitle.textContent).toBe(CARD_DATA.title);
-        expect(cardDescription.textContent).toBe(CARD_DATA.description);
+    test('calls clickPeople when details button is clicked', async () => {
+        const props = {
+            id: '1',
+            title: 'Test Title',
+            description: 'Test Description',
+            clickPeople: mockClickPeople,
+            selectedItems: mockSelectedItems,
+        };
+
+        render(
+            <Provider store={store}>
+                <CardItem {...props} />
+            </Provider>,
+        );
+
+        await userEvent.click(screen.getByTestId('card-details-button'));
+        expect(mockClickPeople).toHaveBeenCalledWith('1');
+    });
+
+    test('checkbox is checked if item is selected', () => {
+        const selectedItems = {
+            '1': {
+                id: '1',
+                title: 'Test Title',
+                description: 'Test Description',
+            },
+        };
+        const props = {
+            id: '1',
+            title: 'Test Title',
+            description: 'Test Description',
+            clickPeople: mockClickPeople,
+            selectedItems,
+        };
+
+        render(
+            <Provider store={store}>
+                <CardItem {...props} />
+            </Provider>,
+        );
+
+        expect(
+            screen.getByTestId('card-checkbox').querySelector('input'),
+        ).toBeChecked();
     });
 });

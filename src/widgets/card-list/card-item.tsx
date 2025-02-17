@@ -50,8 +50,10 @@ const CardItem: FC<CardItemProps> = ({
                 className="whitespace-nowrap px-6 py-4">
                 {description}
             </td>
-            <td data-testid="card-details" className="">
-                <Button onClick={onClickItem}>Details</Button>
+            <td className="">
+                <Button data-testid="card-details-button" onClick={onClickItem}>
+                    Details
+                </Button>
             </td>
         </tr>
     );

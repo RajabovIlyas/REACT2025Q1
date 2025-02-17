@@ -1,5 +1,4 @@
-import { People } from '../../entities/people';
-import { PeopleListResponse } from '../api/people';
+import { People, PeopleListResponse } from '../../entities/people';
 
 export const PEOPLE_BY_ID_RESULT_MOCK: People = {
     name: 'C-3PO',

@@ -1,40 +1,119 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 import PeopleSearch from './people-search.tsx';
-import { MemoryRouter } from 'react-router';
+import { usePeopleSearch } from './hooks';
 import { vi } from 'vitest';
-import {
-    PEOPLE_BY_ID_RESULT_MOCK,
-    PEOPLE_LIST_RESULT_MOCK,
-} from '../../shared/constants/test.constants.ts';
 import { Providers } from '../../app/providers';
+import { MemoryRouter } from 'react-router';
 
-describe('people-search component', () => {
+vi.mock('./hooks');
+
+describe('PeopleSearch', () => {
     beforeEach(() => {
-        vi.mock('../../shared/api/people', () => {
-            return {
-                peopleListQuery: vi.fn(() =>
-                    Promise.resolve(PEOPLE_LIST_RESULT_MOCK),
-                ),
-                peopleQuery: vi.fn(() =>
-                    Promise.resolve(PEOPLE_BY_ID_RESULT_MOCK),
-                ),
-            };
+        vi.clearAllMocks();
+    });
+
+    it('renders loading state', () => {
+        vi.mocked(usePeopleSearch).mockReturnValue({
+            loading: true,
+            results: [],
+            pagination: {
+                prev: null,
+                next: null,
+            },
+            error: null,
+            fetchResults: vi.fn(),
+            loadPage: vi.fn(),
+            triggerError: vi.fn(),
         });
 
         render(
-            <Providers>
-                <MemoryRouter>
+            <MemoryRouter>
+                <Providers>
                     <PeopleSearch />
-                </MemoryRouter>
-            </Providers>,
+                </Providers>
+            </MemoryRouter>,
         );
+
+        expect(screen.getByTestId('loader')).toBeInTheDocument();
     });
 
-    it('calls loadPage with correct parameters when Next button is clicked', async () => {
-        const nextButton = await screen.findByTestId('pagination-next');
-        await userEvent.click(nextButton);
+    it('renders error state', () => {
+        const error = new Error('Something went wrong');
+        vi.mocked(usePeopleSearch).mockReturnValue({
+            loading: false,
+            results: [],
+            pagination: {
+                prev: null,
+                next: null,
+            },
+            error,
+            fetchResults: vi.fn(),
+            loadPage: vi.fn(),
+            triggerError: vi.fn(),
+        });
 
-        expect(true).toBe(true);
+        expect(() =>
+            render(
+                <MemoryRouter>
+                    <Providers>
+                        <PeopleSearch />
+                    </Providers>
+                </MemoryRouter>,
+            ),
+        ).toThrow(error);
+    });
+
+    it('renders results when available', () => {
+        vi.mocked(usePeopleSearch).mockReturnValue({
+            loading: false,
+            results: [{ id: '1', title: 'Luke Skywalker', description: '' }],
+            pagination: {
+                prev: null,
+                next: null,
+            },
+            error: null,
+            fetchResults: vi.fn(),
+            loadPage: vi.fn(),
+            triggerError: vi.fn(),
+        });
+
+        render(
+            <MemoryRouter>
+                <Providers>
+                    <PeopleSearch />
+                </Providers>
+            </MemoryRouter>,
+        );
+
+        expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
+    });
+
+    it('calls triggerError when button is clicked', () => {
+        const mockTriggerError = vi.fn();
+        vi.mocked(usePeopleSearch).mockReturnValue({
+            loading: false,
+            results: [],
+            pagination: {
+                prev: null,
+                next: null,
+            },
+            error: null,
+            fetchResults: vi.fn(),
+            loadPage: vi.fn(),
+            triggerError: mockTriggerError,
+        });
+
+        render(
+            <MemoryRouter>
+                <Providers>
+                    <PeopleSearch />
+                </Providers>
+            </MemoryRouter>,
+        );
+
+        const errorButton = screen.getByText(/trigger error/i);
+        fireEvent.click(errorButton);
+
+        expect(mockTriggerError).toHaveBeenCalled();
     });
 });

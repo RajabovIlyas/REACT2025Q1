@@ -1,4 +1,4 @@
-import { People } from '../entities/people';
+import { People } from '../../entities/people';
 import { FC } from 'react';
 
 type ItemDetailsProps = People;

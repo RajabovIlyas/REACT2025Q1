@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useCardDetails } from './card-details.hook.ts';
-import CardDetailsUI from '../../widgets/card-details.tsx';
+import CardDetailsUI from '../../widgets/card-details/card-details.tsx';
 import Loader from '../../shared/ui/loader.tsx';
 
 const CardDetails: FC = () => {

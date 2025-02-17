@@ -14,6 +14,7 @@ const ThemeSwitch = () => {
         <div className="toggle-switch">
             <label className="switch-label">
                 <input
+                    data-testid="toggle-switch"
                     type="checkbox"
                     checked={theme === SiteTheme.LIGHT}
                     className="checkbox"
